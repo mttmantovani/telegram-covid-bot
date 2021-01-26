@@ -1,0 +1,16 @@
+<b><i>📅 {{ date }}</i></b>
+
+
+<b>💉 VACCINATIONS in Italy</b>
+
+<b>Total doses: </b>{{ '{:,.0f}'.format(total_doses) }}
+<b>1st doses: </b>{{ '{:,.0f}'.format(total_first_dose) }} ({{ '%.2f' | format(pc_first_dose) }}% of population)
+<b>2nd doses: </b>{{ '{:,.0f}'.format(total_second_dose) }} ({{ '%.2f' | format(pc_second_dose) }}% of population)
+
+<b>Total # of doses last week: </b> {{ '{:,.0f}'.format(lw_total_doses) }} ({{ '%+.2f' | format(pc_pw_doses) }}% compared to previous week)
+<b>Average # of doses per day last week : </b> {{ '{:,.0f}'.format(avg_lw_doses) }} ({{ '%.3f' | format(pc_lw_doses) }}% of population)
+
+<b># of doses yesterday: </b> {{ '{:,.0f}'.format(y_total_doses) }} ({{ '%+.2f' | format(pc_y_doses) }}% compared to previous day)
+
+<b>{{ '{:,.0f}'.format(days_to_herd) }} days</b> until herd immunity (70% of population vaccinated) is reached at the current rate
+
