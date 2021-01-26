@@ -1,6 +1,8 @@
 token.txt
 test.ipynb
 charts/*.png
-__pycache__/
 
+__pycache__/
 .ipynb_checkpoints/
+
+nohup.out

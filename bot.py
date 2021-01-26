@@ -193,8 +193,8 @@ def subscribe(update: Update, context: CallbackContext) -> None:
     if is_subscribed(str(chat_id), context):
         text = 'You are already subscribed.'
     else:    
-        context.job_queue.run_daily(latest_job, time(hour=13, minute=40, tzinfo=pytz.timezone('Europe/Rome')), days=(0,1,2,3,4,5,6), context=chat_id, name=str(chat_id))
-        text = 'You will receive daily updates at 13:40 CET.'
+        context.job_queue.run_daily(latest_job, time(hour=20, minute=0, tzinfo=pytz.timezone('Europe/Rome')), days=(0,1,2,3,4,5,6), context=chat_id, name=str(chat_id))
+        text = 'You will receive daily updates at 20:00 CET.'
     update.message.reply_text(text)
 
 def unsubscribe(update: Update, context: CallbackContext) -> None:
