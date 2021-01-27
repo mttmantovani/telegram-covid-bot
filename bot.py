@@ -199,6 +199,7 @@ def latest(update: Update, context: CallbackContext) -> None:
 
 
 def latest_job(context):
+    today = dt.now().strftime("%Y-%m-%d")
     data = get_vaccines_data()
     data["date"] = dt.now().strftime("%b %-d, %Y - %H:%M")
     with codecs.open("template.html", "r", encoding="UTF-8") as file:
@@ -207,6 +208,26 @@ def latest_job(context):
     job = context.job
     context.bot.send_message(
         job.context, text=template.render(**data), parse_mode="HTML"
+    )
+
+    context.bot.send_photo(
+        job.context,
+        "https://raw.githubusercontent.com/mttmantovani/telegram-covid-bot/main/charts/"
+        + today
+        + "-daily.png",
+    )
+    context.bot.send_photo(
+        job.context,
+        "https://raw.githubusercontent.com/mttmantovani/telegram-covid-bot/main/charts/"
+        + today
+        + "-total.png",
+    )
+    context.bot.send_photo(
+        job.context,
+        "https://raw.githubusercontent.com/mttmantovani/telegram-covid-bot/main/charts/"
+        + today
+        + "-map.png",
+        caption="Number of doses per 100 people",
     )
 
 
@@ -251,7 +272,7 @@ def subscribe(update: Update, context: CallbackContext) -> None:
     else:
         context.job_queue.run_daily(
             latest_job,
-            time(hour=20, tzinfo=pytz.timezone("Europe/Rome")),
+            time(hour=17, minute=15, tzinfo=pytz.timezone("Europe/Rome")),
             days=(0, 1, 2, 3, 4, 5, 6),
             context=chat_id,
             name=str(chat_id),
