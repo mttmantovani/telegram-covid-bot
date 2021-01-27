@@ -1,0 +1,2 @@
+beautify:
+	@isort . && black .
