@@ -48,8 +48,9 @@ def load_df():
 
     return df
 
+
 def load_map():
-    italy_map = gpd.read_file('maps/italy-with-pa.shp').set_index('area').sort_index()
+    italy_map = gpd.read_file("maps/italy-with-pa.shp").set_index("area").sort_index()
 
     return italy_map
 
@@ -158,18 +159,19 @@ def plot_cumulative():
     fig.autofmt_xdate()
     plt.savefig("charts/" + today + "-total.png", dpi=300)
 
+
 def plot_map():
 
     italy_map = load_map()
-    df = load_df().groupby(by=['area']).sum().drop(['ITA'])
-    df = italy_map.merge(df, on='area', how='right')
-    df['ratio'] = df['totale'] / df['pop'] * 100
+    df = load_df().groupby(by=["area"]).sum().drop(["ITA"])
+    df = italy_map.merge(df, on="area", how="right")
+    df["ratio"] = df["totale"] / df["pop"] * 100
 
     fig, ax = plt.subplots()
     today = dt.now().strftime("%Y-%m-%d")
-    df.plot(ax=ax, column='ratio', cmap='autumn_r',legend=True, categorical=False)
-    plt.axis('off')
-    plt.savefig('charts/' + today + '-map.png', dpi=300)
+    df.plot(ax=ax, column="ratio", cmap="autumn_r", legend=True, categorical=False)
+    plt.axis("off")
+    plt.savefig("charts/" + today + "-map.png", dpi=300)
 
 
 def start(update: Update, context: CallbackContext) -> None:
@@ -215,7 +217,10 @@ def plot(update: Update, context: CallbackContext) -> None:
     plot_map()
     update.message.reply_photo(open("charts/" + today + "-total.png", "rb"))
     update.message.reply_photo(open("charts/" + today + "-daily.png", "rb"))
-    update.message.reply_photo(open("charts/" + today + "-map.png", "rb"), caption="Number of doses per 100 people")
+    update.message.reply_photo(
+        open("charts/" + today + "-map.png", "rb"),
+        caption="Number of doses per 100 people",
+    )
 
 
 def is_subscribed(name, context):
