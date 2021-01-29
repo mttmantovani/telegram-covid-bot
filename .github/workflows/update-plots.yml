@@ -26,7 +26,10 @@ jobs:
                   if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
             - name: Run update script
-              run: python fetch.py
+              run: |
+                  python fetch.py
+                  ls -ta 
+
 
             - name: Boh
               run: |
