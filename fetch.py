@@ -1,32 +1,14 @@
-import codecs
 import io
-import logging
 import re
 from datetime import date
 from datetime import datetime as dt
-from datetime import time
 from datetime import timedelta as td
 
 import geopandas as gpd
 import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 import pandas as pd
-import pytz
 import requests
-from jinja2 import Template
-from telegram import Update
-from telegram.ext import CallbackContext, CommandHandler, Updater
-
-
-logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
-)
-
-logger = logging.getLogger(__name__)
-
-
-with open("token.txt", "r") as tk:
-    token = tk.readline().strip()
 
 data_src = "https://raw.githubusercontent.com/italia/covid19-opendata-vaccini/master/dati/somministrazioni-vaccini-summary-latest.csv"
 pop_src = "https://www.worldometers.info/world-population/italy-population/"
@@ -173,158 +155,10 @@ def plot_map():
     plt.savefig("charts/" + today + "-map.png", dpi=300)
 
 
-def start(update: Update, context: CallbackContext) -> None:
-    update.message.reply_text(
-        "Hi! I'm VaccineItalyBot. You can get the latest data \
-about COVID vaccinations in Italy with the command <b>/latest</b>. \
-Subscribe to get daily updates: \
-<b>/subscribe</b>. Or <b>/unsubscribe</b>.\n \
-<b>/plot</b> to see a chart of vaccinations.",
-        parse_mode="HTML",
-    )
-
-
-def help_command(update: Update, context: CallbackContext) -> None:
-    """Send a message when the command /help is issued."""
-    update.message.reply_text("Here will go help message")
-
-
-def latest(update: Update, context: CallbackContext) -> None:
-    data = get_vaccines_data()
-    data["date"] = dt.now().strftime("%b %-d, %Y - %H:%M")
-    with codecs.open("template.html", "r", encoding="UTF-8") as file:
-        template = Template(file.read())
-        update.message.reply_text(template.render(**data), parse_mode="HTML")
-
-
-def latest_job(context):
-    today = dt.now().strftime("%Y-%m-%d")
-    data = get_vaccines_data()
-    data["date"] = dt.now().strftime("%b %-d, %Y - %H:%M")
-    with codecs.open("template.html", "r", encoding="UTF-8") as file:
-        template = Template(file.read())
-
-    job = context.job
-    context.bot.send_message(
-        job.context, text=template.render(**data), parse_mode="HTML"
-    )
-
-    context.bot.send_photo(
-        job.context,
-        "https://raw.githubusercontent.com/mttmantovani/telegram-covid-bot/main/charts/"
-        + today
-        + "-daily.png",
-    )
-    context.bot.send_photo(
-        job.context,
-        "https://raw.githubusercontent.com/mttmantovani/telegram-covid-bot/main/charts/"
-        + today
-        + "-total.png",
-    )
-    context.bot.send_photo(
-        job.context,
-        "https://raw.githubusercontent.com/mttmantovani/telegram-covid-bot/main/charts/"
-        + today
-        + "-map.png",
-        caption="Number of doses per 100 people",
-    )
-
-
-def plot(update: Update, context: CallbackContext) -> None:
-    today = dt.now().strftime("%Y-%m-%d")
+def main():
     plot_daily_doses()
     plot_cumulative()
     plot_map()
-    update.message.reply_photo(open("charts/" + today + "-total.png", "rb"))
-    update.message.reply_photo(open("charts/" + today + "-daily.png", "rb"))
-    update.message.reply_photo(
-        open("charts/" + today + "-map.png", "rb"),
-        caption="Number of doses per 100 people",
-    )
-
-
-def is_subscribed(name, context):
-    current_jobs = context.job_queue.get_jobs_by_name(name)
-    if not current_jobs:
-        return False
-    return True
-
-
-def remove_subscription(name, context):
-    for job in context.job_queue.get_jobs_by_name(name):
-        job.schedule_removal()
-
-    with open("subscribed_users.txt", "r") as su:
-        users = su.readlines()
-
-    with open("subscribed_users.txt", "w") as su:
-        for user in users:
-            if user.strip("\n") != name:
-                su.write(user)
-
-
-def subscribe(update: Update, context: CallbackContext) -> None:
-    chat_id = update.message.chat_id
-
-    if is_subscribed(str(chat_id), context):
-        text = "You are already subscribed."
-    else:
-        context.job_queue.run_daily(
-            latest_job,
-            time(hour=20, tzinfo=pytz.timezone("Europe/Rome")),
-            days=(0, 1, 2, 3, 4, 5, 6),
-            context=chat_id,
-            name=str(chat_id),
-        )
-
-        with open("subscribed_users.txt", "a") as su:
-            su.write(str(chat_id) + "\n")
-
-        text = "You will receive daily updates at 20:00 CET."
-
-    update.message.reply_text(text)
-
-
-def unsubscribe(update: Update, context: CallbackContext) -> None:
-    chat_id = update.message.chat_id
-
-    if is_subscribed(str(chat_id), context):
-        remove_subscription(str(chat_id), context)
-        text = "You will no longer receive the latest updates."
-    else:
-        text = (
-            "You are not currently subscribed. Use /subscribe to receive daily updates."
-        )
-    update.message.reply_text(text)
-
-
-def main():
-    updater = Updater(token, use_context=True)
-
-    with open("subscribed_users.txt", "r") as su:
-        subscribed_users = [s.strip("\n") for s in su.readlines()]
-
-    for user in subscribed_users:
-        updater.job_queue.run_daily(
-            latest_job,
-            time(hour=20, tzinfo=pytz.timezone("Europe/Rome")),
-            days=(0, 1, 2, 3, 4, 5, 6),
-            context=user,
-            name=user,
-        )
-
-    dispatcher = updater.dispatcher
-
-    dispatcher.add_handler(CommandHandler("start", start))
-    dispatcher.add_handler(CommandHandler("help", help_command))
-    dispatcher.add_handler(CommandHandler("latest", latest))
-    dispatcher.add_handler(CommandHandler("plot", plot))
-    dispatcher.add_handler(CommandHandler("subscribe", subscribe))
-    dispatcher.add_handler(CommandHandler("unsubscribe", unsubscribe))
-
-    updater.start_polling()
-
-    updater.idle()
 
 
 if __name__ == "__main__":
