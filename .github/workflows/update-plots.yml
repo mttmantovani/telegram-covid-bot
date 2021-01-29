@@ -5,8 +5,8 @@ on:
         branches:
             - master
     schedule:
-        - cron '49 11 * * *'
-    worfklow_dispatch:
+        - cron: '33 13 * * *'
+    workflow_dispatch:
 
 jobs:
     update-plots:
