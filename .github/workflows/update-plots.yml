@@ -28,6 +28,7 @@ jobs:
             - name: Generate plots
               run: |
                   python fetch.py
+                  mv *.png charts/
 
             - name: Commit changes
               run: |
