@@ -17,7 +17,6 @@ from jinja2 import Template
 from telegram import Update
 from telegram.ext import CallbackContext, CommandHandler, Updater
 
-
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
 )
