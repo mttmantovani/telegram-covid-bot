@@ -144,7 +144,7 @@ def plot_cumulative():
 def plot_map():
 
     italy_map = load_map()
-    df = load_df().groupby(by=["area"]).sum().drop(["ITA"])
+    df = load_df().groupby(by=["area"]).sum()
     df = italy_map.merge(df, on="area", how="right")
     df["ratio"] = df["totale"] / df["pop"] * 100
 
