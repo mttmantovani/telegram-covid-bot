@@ -29,6 +29,13 @@ jobs:
               run: |
                   python fetch.py
             
+            - name: Evil git hack
+              run: |
+                 git fetch origin main
+                 mv charts/$(date +"%Y-%m-%d")-*.png ..
+                 git switch main
+                 mv ../$(date +"%Y-%m-%d")-*.png charts/
+
             - name: Commit changes
               uses: EndBug/add-and-commit@v7
               with:
