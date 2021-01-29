@@ -28,13 +28,21 @@ jobs:
             - name: Generate plots
               run: |
                   python fetch.py
-                  mv *.png charts/
-
+            
             - name: Commit changes
-              run: |
-                  ls -lt charts/
-                  git config --local user.email "actions@github.com"
-                  git config --local user.name "GitHub Actions"
-                  git add -A
-                  git commit -m 'Update plots' || echo "No changes to commit"
-                  git push origin || echo "No changes to commit"
+              uses: EndBug/add-and-commit@v7
+              with:
+                  author_name: GitHub Actions
+                  author_email: actions@github.com
+                  message: 'Update plots'
+                  add: 'charts/*.png'
+
+
+#            - name: Commit changes
+#              run: |
+#                  ls -lt charts/
+#                  git config --local user.email "actions@github.com"
+#                  git config --local user.name "GitHub Actions"
+#                  git add -A
+#                  git commit -m 'Update plots' || echo "No changes to commit"
+#                  git push origin || echo "No changes to commit"
