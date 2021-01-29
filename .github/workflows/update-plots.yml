@@ -27,7 +27,7 @@ jobs:
 
             - name: Remove old plots
               run: |
-                  rm -f $(date +"%Y-%m-%d")-*.png
+                  rm -f charts/$(date +"%Y-%m-%d")-*.png
 
             - name: Generate plots
               run: |
