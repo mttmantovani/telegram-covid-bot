@@ -47,12 +47,6 @@ def load_df():
     return df
 
 
-def load_map():
-    italy_map = gpd.read_file("maps/italy-with-pa.shp").set_index("area").sort_index()
-
-    return italy_map
-
-
 def get_vaccines_data():
 
     df = load_df()
@@ -115,61 +109,6 @@ def get_vaccines_data():
     return vaccines_data
 
 
-def plot_daily_doses():
-
-    df = load_df()
-    df = df.loc[df.area == "ITA"]
-
-    fig, ax = plt.subplots()
-    today = dt.now().strftime("%Y-%m-%d")
-
-    ax.set_title(dt.now().strftime("%b %-d, %Y"))
-    ax.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d"))
-    ax.xaxis.set_major_locator(mdates.AutoDateLocator())
-    ax.set_ylabel("Daily doses")
-
-    ax.bar(df.index, df.prima_dose, label="1st dose")
-    ax.bar(df.index, df.seconda_dose, bottom=df.prima_dose, label="2nd dose")
-
-    fig.autofmt_xdate()
-
-    ax.legend(frameon=False)
-
-    plt.savefig("charts/" + today + "-daily.png", dpi=300)
-
-
-def plot_cumulative():
-
-    df = load_df()
-    df = df.loc[df.area == "ITA"]
-
-    fig, ax = plt.subplots()
-    today = dt.now().strftime("%Y-%m-%d")
-    ax.set_title("Total doses as of " + dt.now().strftime("%b %-d, %Y"))
-    ax.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d"))
-    ax.xaxis.set_major_locator(mdates.AutoDateLocator())
-    ax.set_ylabel("Total doses")
-
-    ax.plot(df.prima_dose.cumsum(), marker="o", label="1st dose")
-    ax.plot(df.seconda_dose.cumsum(), marker="o", label="2nd dose")
-    ax.plot(df.totale.cumsum(), marker="o", color="ForestGreen", label="Total")
-    ax.legend(frameon=False, loc="best")
-    fig.autofmt_xdate()
-    plt.savefig("charts/" + today + "-total.png", dpi=300)
-
-
-def plot_map():
-
-    italy_map = load_map()
-    df = load_df().groupby(by=["area"]).sum().drop(["ITA"])
-    df = italy_map.merge(df, on="area", how="right")
-    df["ratio"] = df["totale"] / df["pop"] * 100
-
-    fig, ax = plt.subplots()
-    today = dt.now().strftime("%Y-%m-%d")
-    df.plot(ax=ax, column="ratio", cmap="autumn_r", legend=True, categorical=False)
-    plt.axis("off")
-    plt.savefig("charts/" + today + "-map.png", dpi=300)
 
 
 def start(update: Update, context: CallbackContext) -> None:
@@ -231,13 +170,16 @@ def latest_job(context):
 
 def plot(update: Update, context: CallbackContext) -> None:
     today = dt.now().strftime("%Y-%m-%d")
-    plot_daily_doses()
-    plot_cumulative()
-    plot_map()
-    update.message.reply_photo(open("charts/" + today + "-total.png", "rb"))
-    update.message.reply_photo(open("charts/" + today + "-daily.png", "rb"))
-    update.message.reply_photo(
-        open("charts/" + today + "-map.png", "rb"),
+
+    update.message.reply_photo("https://raw.githubusercontent.com/mttmantovani/telegram-covid-bot/main/charts/"
+        + today
+        + "-total.png")
+    update.message.reply_photo("https://raw.githubusercontent.com/mttmantovani/telegram-covid-bot/main/charts/"
+        + today
+        + "-daily.png")
+    update.message.reply_photo("https://raw.githubusercontent.com/mttmantovani/telegram-covid-bot/main/charts/"
+        + today
+        + "-map.png",
         caption="Number of doses per 100 people",
     )
 
