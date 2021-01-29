@@ -31,11 +31,9 @@ jobs:
                   ls charts/ -lta 
 
 
-            - name: Boh
+            - name: Test
               run: |
-                  git status
                   git fetch origin main
-                  git status
 
             - name: Commit changes
               uses: stefanzweifel/git-auto-commit-action@v4
