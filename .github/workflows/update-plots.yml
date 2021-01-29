@@ -28,7 +28,7 @@ jobs:
             - name: Run update script
               run: |
                   python fetch.py
-                  ls -ta 
+                  ls charts/ -lta 
 
 
             - name: Boh
