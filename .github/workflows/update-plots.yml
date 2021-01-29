@@ -5,7 +5,7 @@ on:
         branches:
             - main
     schedule:
-        - cron: '07 14 * * *'
+        - cron: '30 17 * * *'
     workflow_dispatch:
 
 jobs:
@@ -25,23 +25,14 @@ jobs:
                   python -m pip install --upgrade pip
                   if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-            - name: Run update script
+            - name: Generate plots
               run: |
                   python fetch.py
-                  ls charts/ -lta 
-
-
-            - name: Test
-              run: |
-                  git fetch origin main
 
             - name: Commit changes
-              uses: stefanzweifel/git-auto-commit-action@v4
-              with:
-                commit_message: Update dataset and webpage
-                commit_user_name: GitHub Actions
-                commit_user_email: actions@github.com
-                commit_author: GitHub Actions <actions@github.com>
-                branch: main
-                file_pattern: charts/*.png
- 
+              run: |
+                  git config --local user.email "actions@github.com"
+                  git config --local user.name "GitHub Actions"
+                  git add -A
+                  git commit -m 'Update plots' || echo "No changes to commit"
+                  git push origin || echo "No changes to commit"

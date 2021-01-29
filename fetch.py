@@ -118,7 +118,7 @@ def plot_daily_doses():
 
     ax.legend(frameon=False)
 
-    plt.savefig("charts/test1.png", dpi=300)
+    plt.savefig("charts/" + today + "-daily.png", dpi=300)
 
 
 def plot_cumulative():
@@ -138,7 +138,7 @@ def plot_cumulative():
     ax.plot(df.totale.cumsum(), marker="o", color="ForestGreen", label="Total")
     ax.legend(frameon=False, loc="best")
     fig.autofmt_xdate()
-    plt.savefig("charts/test2.png", dpi=300)
+    plt.savefig("charts/" + today + "-total.png", dpi=300)
 
 
 def plot_map():
@@ -152,7 +152,7 @@ def plot_map():
     today = dt.now().strftime("%Y-%m-%d")
     df.plot(ax=ax, column="ratio", cmap="autumn_r", legend=True, categorical=False)
     plt.axis("off")
-    plt.savefig("charts/test3.png", dpi=300)
+    plt.savefig("charts/" + today + "-map.png", dpi=300)
 
 
 def main():
