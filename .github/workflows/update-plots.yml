@@ -3,7 +3,7 @@ name: Update plots
 on:
     push:
         branches:
-            - master
+            - main
     schedule:
         - cron: '36 12 * * *'
     workflow_dispatch:
