@@ -109,8 +109,6 @@ def get_vaccines_data():
     return vaccines_data
 
 
-
-
 def start(update: Update, context: CallbackContext) -> None:
     update.message.reply_text(
         "Hi! I'm VaccineItalyBot. You can get the latest data \
@@ -171,13 +169,18 @@ def latest_job(context):
 def plot(update: Update, context: CallbackContext) -> None:
     today = dt.now().strftime("%Y-%m-%d")
 
-    update.message.reply_photo("https://raw.githubusercontent.com/mttmantovani/telegram-covid-bot/main/charts/"
+    update.message.reply_photo(
+        "https://raw.githubusercontent.com/mttmantovani/telegram-covid-bot/main/charts/"
         + today
-        + "-total.png")
-    update.message.reply_photo("https://raw.githubusercontent.com/mttmantovani/telegram-covid-bot/main/charts/"
+        + "-total.png"
+    )
+    update.message.reply_photo(
+        "https://raw.githubusercontent.com/mttmantovani/telegram-covid-bot/main/charts/"
         + today
-        + "-daily.png")
-    update.message.reply_photo("https://raw.githubusercontent.com/mttmantovani/telegram-covid-bot/main/charts/"
+        + "-daily.png"
+    )
+    update.message.reply_photo(
+        "https://raw.githubusercontent.com/mttmantovani/telegram-covid-bot/main/charts/"
         + today
         + "-map.png",
         caption="Number of doses per 100 people",
