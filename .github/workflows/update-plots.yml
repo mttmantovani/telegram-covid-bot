@@ -36,4 +36,5 @@ jobs:
                 commit_user_email: actions@github.com
                 commit_author: GitHub Actions <actions@github.com>
                 branch: main
+                file_pattern: charts/*.png
  
