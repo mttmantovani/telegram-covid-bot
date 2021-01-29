@@ -279,7 +279,7 @@ def subscribe(update: Update, context: CallbackContext) -> None:
         )
 
         with open("subscribed_users.txt", "a") as su:
-            su.write(str(chat_id))
+            su.write(str(chat_id) + "\n")
 
         text = "You will receive daily updates at 20:00 CET."
 
