@@ -1,8 +1,6 @@
 import codecs
 import io
 import logging
-import os
-import pickle
 import re
 from datetime import date
 from datetime import datetime as dt
