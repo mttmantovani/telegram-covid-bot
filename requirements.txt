@@ -9,6 +9,7 @@ cligj==0.7.1
 cryptography==3.3.1
 cycler==0.10.0
 decorator==4.4.2
+descartes==1.1.0
 Fiona==1.8.18
 geopandas==0.8.2
 idna==2.10
