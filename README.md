@@ -4,6 +4,6 @@ Get information about vaccinations in Italy through Telegram. Add me at [t.me/Va
 
 ## Latest updates
 
-![charts/2021-01-28-total.png](Total doses administered.)
+![Total doses administered.](charts/2021-01-28-total.png)
 
 
