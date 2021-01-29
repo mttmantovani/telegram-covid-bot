@@ -28,6 +28,12 @@ jobs:
             - name: Run update script
               run: python fetch.py
 
+            - name: Boh
+              run: |
+                  git status
+                  git fetch origin main
+                  git status
+
             - name: Commit changes
               uses: stefanzweifel/git-auto-commit-action@v4
               with:
