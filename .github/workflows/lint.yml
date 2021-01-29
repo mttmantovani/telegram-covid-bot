@@ -1,0 +1,36 @@
+name: Lint source code
+on: push
+
+jobs:
+    run:
+        name: Lint
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repo
+              uses: actions/checkout@v2
+
+            - name: Set up python 3.7.9
+              uses: actions/setup-python@v2
+              with:
+                  python-version: 3.7.9
+
+            - name: Install dependencies
+              run: |
+                  python -m pip install --upgrade pip
+                  pip install autoflake
+                  pip install isort
+                  pip install black
+
+            - name: Lint source cpde
+              run: |
+                  autoflake -iv --remove-all-unused-imports .
+                  isort .
+                  black .
+
+            - name: Commit changes
+              uses: EndBug/add-and-commit@v7
+              with:
+                  author_name: Your Name
+                  author_email: mail@example.com
+                  message: 'lint'
+                  add: '.'
