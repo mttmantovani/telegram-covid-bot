@@ -15,10 +15,10 @@ jobs:
         steps:
             - uses: actions/checkout@v2
 
-            - name: Set up python 3.7
+            - name: Set up python 3.7.9
               uses: actions/setup-python@v2
               with:
-                  python-version: 3.7
+                  python-version: 3.7.9
 
             - name: Install requirements
               run: |
@@ -35,7 +35,7 @@ jobs:
                   author_name: GitHub Actions
                   author_email: actions@github.com
                   message: 'Update plots'
-                  add: 'charts/*.png'
+                  add: '.'
 
 
 #            - name: Commit changes
