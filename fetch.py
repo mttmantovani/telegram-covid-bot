@@ -38,8 +38,7 @@ def load_map():
 
 def get_vaccines_data():
 
-    df = load_df()
-    df = df.loc[df.area == "ITA"]
+    df = load_df().groupby('data_somministrazione').sum()
 
     population = get_population()
     total_doses = df.totale.sum()
@@ -100,8 +99,7 @@ def get_vaccines_data():
 
 def plot_daily_doses():
 
-    df = load_df()
-    df = df.loc[df.area == "ITA"]
+    df = load_df().groupby('data_somministrazione').sum()
 
     fig, ax = plt.subplots()
     today = dt.now().strftime("%Y-%m-%d")
@@ -123,8 +121,7 @@ def plot_daily_doses():
 
 def plot_cumulative():
 
-    df = load_df()
-    df = df.loc[df.area == "ITA"]
+    df = load_df().groupby('data_somministrazione').sum()
 
     fig, ax = plt.subplots()
     today = dt.now().strftime("%Y-%m-%d")
