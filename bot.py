@@ -49,7 +49,7 @@ def load_df():
 
 def get_vaccines_data():
 
-    df = load_df().groupby('data_somministrazione').sum()
+    df = load_df().groupby("data_somministrazione").sum()
 
     population = get_population()
     total_doses = df.totale.sum()
