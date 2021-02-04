@@ -1,5 +1,7 @@
 import io
+import os
 import re
+import zipfile
 from datetime import date
 from datetime import datetime as dt
 from datetime import timedelta as td
@@ -9,8 +11,6 @@ import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 import pandas as pd
 import requests
-import zipfile
-import os
 
 data_src = "https://raw.githubusercontent.com/italia/covid19-opendata-vaccini/master/dati/somministrazioni-vaccini-summary-latest.csv"
 pop_src = "https://www.worldometers.info/world-population/italy-population/"
@@ -21,44 +21,46 @@ pop_pattern = re.compile(pop_exp)
 def get_population_regions():
     # Download data
     if not os.path.isfile("maps/regioni.csv"):
-        url="http://demo.istat.it/pop2020/dati/regioni.zip"
+        url = "http://demo.istat.it/pop2020/dati/regioni.zip"
         request = requests.get(url)
         file = zipfile.ZipFile(io.BytesIO(request.content))
         file.extractall()
         os.system("mv regioni.csv maps")
-    if not os.path.isfile("maps/province.csv"):    
-        url="http://demo.istat.it/pop2020/dati/province.zip"
+    if not os.path.isfile("maps/province.csv"):
+        url = "http://demo.istat.it/pop2020/dati/province.zip"
         request = requests.get(url)
         file = zipfile.ZipFile(io.BytesIO(request.content))
         file.extractall()
         os.system("mv province.csv maps")
-    
-    
-    pop_reg=pd.read_csv("maps/regioni.csv",header=1)[:-2]
-    pop_prov=pd.read_csv("maps/province.csv",header=1)[:-2]
-    pop_prov=pop_prov[(pop_prov["Provincia"]=="Bolzano/Bozen") | (pop_prov["Provincia"]=="Trento") ]
-    pop_prov=pop_prov.rename(columns={"Provincia":"NOME_REG"})
-    pop_reg=pop_reg.rename(columns={"Regione":"NOME_REG"})
-    pop_total=pop_reg.append(pop_prov)
+
+    pop_reg = pd.read_csv("maps/regioni.csv", header=1)[:-2]
+    pop_prov = pd.read_csv("maps/province.csv", header=1)[:-2]
+    pop_prov = pop_prov[
+        (pop_prov["Provincia"] == "Bolzano/Bozen") | (pop_prov["Provincia"] == "Trento")
+    ]
+    pop_prov = pop_prov.rename(columns={"Provincia": "NOME_REG"})
+    pop_reg = pop_reg.rename(columns={"Regione": "NOME_REG"})
+    pop_total = pop_reg.append(pop_prov)
     # Align with Covid data
-    pop_total=pop_total.replace({"Bolzano/Bozen": "Bolzano"})
-    pop_total=pop_total.replace({"Trento": "Trento"})
-    pop_total=pop_total.replace({"Friuli-Venezia Giulia": "Friuli Venezia Giulia"})
-    pop_total=pop_total.replace({"Valle d'Aosta/Vallée d'Aoste":\
-                                 "VALLE D'AOSTA/VALLÉE D'AOSTE\r\nVALLE D'AOSTA/VALLÉE D'AOSTE"})
-    pop_total = pop_total.drop(pop_total[pop_total["NOME_REG"] =="Trentino-Alto Adige/Südtirol"].index)
-    
-    
-    pop_total["population"]=pop_total["Totale Maschi"]+pop_total["Totale Femmine"]
-    pop_total=pop_total[["NOME_REG","Età", "population"]]
-    pop_total = pop_total.drop(pop_total[pop_total["Età"] =="Totale"].index)
-    pop_total=pop_total.astype({'population': 'int32'})
-    pop_total=pop_total.astype({'Età': 'int32'})
-    pop_total["NOME_REG"]=pop_total["NOME_REG"].astype(str).str.upper()
+    pop_total = pop_total.replace({"Bolzano/Bozen": "Bolzano"})
+    pop_total = pop_total.replace({"Trento": "Trento"})
+    pop_total = pop_total.replace({"Friuli-Venezia Giulia": "Friuli Venezia Giulia"})
+    pop_total = pop_total.replace(
+        {
+            "Valle d'Aosta/Vallée d'Aoste": "VALLE D'AOSTA/VALLÉE D'AOSTE\r\nVALLE D'AOSTA/VALLÉE D'AOSTE"
+        }
+    )
+    pop_total = pop_total.drop(
+        pop_total[pop_total["NOME_REG"] == "Trentino-Alto Adige/Südtirol"].index
+    )
+
+    pop_total["population"] = pop_total["Totale Maschi"] + pop_total["Totale Femmine"]
+    pop_total = pop_total[["NOME_REG", "Età", "population"]]
+    pop_total = pop_total.drop(pop_total[pop_total["Età"] == "Totale"].index)
+    pop_total = pop_total.astype({"population": "int32"})
+    pop_total = pop_total.astype({"Età": "int32"})
+    pop_total["NOME_REG"] = pop_total["NOME_REG"].astype(str).str.upper()
     return pop_total
-
-
-
 
 
 def get_population():
@@ -75,12 +77,21 @@ def load_df():
     return df
 
 
-def load_map():    
+def load_map():
     italy_map = gpd.read_file("maps/italy-with-pa.shp")
-    pops_reg=get_population_regions()
-    italy_map = italy_map.merge(pops_reg[((pops_reg["Età"]>16))].groupby(["NOME_REG"])\
-         .sum().drop(columns="Età"),how="left", on="NOME_REG").drop(columns="pop")\
-         .rename(columns={"population":"pop"})
+    pops_reg = get_population_regions()
+    italy_map = (
+        italy_map.merge(
+            pops_reg[((pops_reg["Età"] > 16))]
+            .groupby(["NOME_REG"])
+            .sum()
+            .drop(columns="Età"),
+            how="left",
+            on="NOME_REG",
+        )
+        .drop(columns="pop")
+        .rename(columns={"population": "pop"})
+    )
     italy_map.set_index("area").sort_index()
 
     return italy_map
