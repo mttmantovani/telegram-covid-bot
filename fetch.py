@@ -18,6 +18,17 @@ pop_exp = r"The current population of <strong>Italy</strong> is <strong>(.*?)</s
 pop_pattern = re.compile(pop_exp)
 
 
+region_code = {
+    "Abruzzo": "ABR",
+    "Basilicata": "BAS",
+    "Calabria": "CAL",
+    "Campania": "CAM",
+    "Emilia Romagna": "EMR",
+    "Emilia-Romagna": "EMR",
+    "Emilia": 
+}
+
+
 def get_population_regions():
     # Download data
     if not os.path.isfile("maps/regioni.csv"):
@@ -177,7 +188,7 @@ def plot_daily_doses():
 
     ax.legend(frameon=False)
 
-    plt.savefig("charts/" + today + "-daily.png", dpi=300)
+    plt.savefig(f"charts/{today}-daily.png", dpi=300)
 
 
 def plot_cumulative():
@@ -196,7 +207,7 @@ def plot_cumulative():
     ax.plot(df.totale.cumsum(), marker="o", color="ForestGreen", label="Total")
     ax.legend(frameon=False, loc="best")
     fig.autofmt_xdate()
-    plt.savefig("charts/" + today + "-total.png", dpi=300)
+    plt.savefig(f"charts/{today}-total.png", dpi=300)
 
 
 def plot_map():
@@ -208,15 +219,30 @@ def plot_map():
 
     fig, ax = plt.subplots()
     today = dt.now().strftime("%Y-%m-%d")
+    ax.set_title("Number of doses per 100 people")
     df.plot(ax=ax, column="ratio", cmap="autumn_r", legend=True, categorical=False)
     plt.axis("off")
-    plt.savefig("charts/" + today + "-map.png", dpi=300)
+    plt.savefig(f"charts/{today}-map.png", dpi=300)
+
+#def plot_region(region):
+#
+#    df = load_df()
+#    df = df.loc[(df["area"] == region_code[region.lowercase() | df["area"] == region.uppercase())]
+#
+ #   df
+
+
+
 
 
 def main():
     plot_daily_doses()
     plot_cumulative()
     plot_map()
+
+  #  if sys.argv:
+  #      region = ' '.join(sys.argv)
+  #      plo
 
 
 if __name__ == "__main__":

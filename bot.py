@@ -14,7 +14,7 @@ import pandas as pd
 import pytz
 import requests
 from jinja2 import Template
-from telegram import Update
+from telegram import Update, InputMediaPhoto
 from telegram.ext import CallbackContext, CommandHandler, Updater
 
 logging.basicConfig(
@@ -140,50 +140,32 @@ def latest_job(context):
         template = Template(file.read())
 
     job = context.job
+
+
+    today_wordy = dt.now().strftime("%b %-d, %Y")
+
+    plot_urls = [f"https://raw.githubusercontent.com/mttmantovani/telegram-covid-bot/main/charts/{today}-{plot}.png" for plot in ["total", "daily", "map"]]
+    captions = [f"Daily report of {today_wordy}", "", ""]
+
+    plots = [InputMediaPhoto(url, caption) for url, caption in zip(plot_urls, captions)]
+    
     context.bot.send_message(
         job.context, text=template.render(**data), parse_mode="HTML"
     )
+    context.bot.send_media_group(job.context, plots)
 
-    context.bot.send_photo(
-        job.context,
-        "https://raw.githubusercontent.com/mttmantovani/telegram-covid-bot/main/charts/"
-        + today
-        + "-daily.png",
-    )
-    context.bot.send_photo(
-        job.context,
-        "https://raw.githubusercontent.com/mttmantovani/telegram-covid-bot/main/charts/"
-        + today
-        + "-total.png",
-    )
-    context.bot.send_photo(
-        job.context,
-        "https://raw.githubusercontent.com/mttmantovani/telegram-covid-bot/main/charts/"
-        + today
-        + "-map.png",
-        caption="Number of doses per 100 people",
-    )
 
 
 def plot(update: Update, context: CallbackContext) -> None:
     today = dt.now().strftime("%Y-%m-%d")
+    today_wordy = dt.now().strftime("%b %-d, %Y")
 
-    update.message.reply_photo(
-        "https://raw.githubusercontent.com/mttmantovani/telegram-covid-bot/main/charts/"
-        + today
-        + "-total.png"
-    )
-    update.message.reply_photo(
-        "https://raw.githubusercontent.com/mttmantovani/telegram-covid-bot/main/charts/"
-        + today
-        + "-daily.png"
-    )
-    update.message.reply_photo(
-        "https://raw.githubusercontent.com/mttmantovani/telegram-covid-bot/main/charts/"
-        + today
-        + "-map.png",
-        caption="Number of doses per 100 people",
-    )
+    plot_urls = [f"https://raw.githubusercontent.com/mttmantovani/telegram-covid-bot/main/charts/{today}-{plot}.png" for plot in ["total", "daily", "map"]]
+    captions = [f"Daily report of {today_wordy}", "", ""]
+
+    plots = [InputMediaPhoto(url, caption) for url, caption in zip(plot_urls, captions)]
+    
+    update.message.reply_media_group(plots)
 
 
 def is_subscribed(name, context):
@@ -240,6 +222,11 @@ def unsubscribe(update: Update, context: CallbackContext) -> None:
         )
     update.message.reply_text(text)
 
+def goodbot(update: Update, context: CallbackContext) -> None:
+    chat_id = update.message.chat_id
+    update.message.reply_text("Grazie, mio padrone.")
+
+
 
 def main():
     updater = Updater(token, use_context=True)
@@ -264,6 +251,8 @@ def main():
     dispatcher.add_handler(CommandHandler("plot", plot))
     dispatcher.add_handler(CommandHandler("subscribe", subscribe))
     dispatcher.add_handler(CommandHandler("unsubscribe", unsubscribe))
+    dispatcher.add_handler(CommandHandler("goodbot", goodbot))
+
 
     updater.start_polling()
 
