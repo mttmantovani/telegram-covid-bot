@@ -18,8 +18,6 @@ pop_exp = r"The current population of <strong>Italy</strong> is <strong>(.*?)</s
 pop_pattern = re.compile(pop_exp)
 
 
-
-
 def get_population_regions():
     # Download data
     if not os.path.isfile("maps/regioni.csv"):
@@ -215,15 +213,13 @@ def plot_map():
     plt.axis("off")
     plt.savefig(f"charts/{today}-map.png", dpi=300)
 
-#def plot_region(region):
+
+# def plot_region(region):
 #
 #    df = load_df()
 #    df = df.loc[(df["area"] == region_code[region.lowercase() | df["area"] == region.uppercase())]
 #
- #   df
-
-
-
+#   df
 
 
 def main():
@@ -231,9 +227,10 @@ def main():
     plot_cumulative()
     plot_map()
 
-  #  if sys.argv:
-  #      region = ' '.join(sys.argv)
-  #      plo
+
+#  if sys.argv:
+#      region = ' '.join(sys.argv)
+#      plo
 
 
 if __name__ == "__main__":
