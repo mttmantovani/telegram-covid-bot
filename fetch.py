@@ -18,15 +18,6 @@ pop_exp = r"The current population of <strong>Italy</strong> is <strong>(.*?)</s
 pop_pattern = re.compile(pop_exp)
 
 
-region_code = {
-    "Abruzzo": "ABR",
-    "Basilicata": "BAS",
-    "Calabria": "CAL",
-    "Campania": "CAM",
-    "Emilia Romagna": "EMR",
-    "Emilia-Romagna": "EMR",
-    "Emilia": 
-}
 
 
 def get_population_regions():
