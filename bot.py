@@ -231,9 +231,11 @@ def goodbot(update: Update, context: CallbackContext) -> None:
     chat_id = update.message.chat_id
     update.message.reply_text("Grazie, mio padrone.")
 
+
 def badbot(update: Update, context: CallbackContext) -> None:
     chat_id = update.message.chat_id
-    update.message.reply_text(u"\U0001f62d")
+    update.message.reply_text("\U0001f62d")
+
 
 def main():
     updater = Updater(token, use_context=True)

@@ -209,11 +209,11 @@ def plot_map():
     fig, ax = plt.subplots(dpi=300)
     today = dt.now().strftime("%Y-%m-%d")
     df.plot(ax=ax, column="ratio", cmap="cool", legend=True, categorical=False)
-    #plt.subplots_adjust(left=-0.4, right=1.4, top=0.9, bottom=0.05) 
+    # plt.subplots_adjust(left=-0.4, right=1.4, top=0.9, bottom=0.05)
     plt.tight_layout()
     plt.axis("off")
     ax.set_title("Number of doses per 100 people")
-    plt.savefig(f"charts/{today}-map.png", bbox_inches='tight')
+    plt.savefig(f"charts/{today}-map.png", bbox_inches="tight")
 
 
 # def plot_region(region):
