@@ -17,6 +17,29 @@ pop_src = "https://www.worldometers.info/world-population/italy-population/"
 pop_exp = r"The current population of <strong>Italy</strong> is <strong>(.*?)</strong>"
 pop_pattern = re.compile(pop_exp)
 
+regions = {
+    'ABR': 'Abruzzo',
+    'BAS': 'Basilicata',
+    'CAL': 'Calabria',
+    'CAM': 'Campania',
+    'EMR': ['Emilia', 'Romagna'],
+    'FVG': ['Friuli', 'Venezia', 'Giulia'],
+    'LAZ': 'Lazio',
+    'LIG': 'Liguria', 
+    'LOM': 'Lombardia',
+    'MAR': 'Marche',
+    'MOL': 'Molise',
+    'PAB': ['Trento', 'provincia', 'autonoma'],
+    'PAT': ['Bolzano', 'Bozen', 'provincia', 'autonoma'],
+    'PIE': 'Piemonte', 
+    'PUG': 'Puglia',
+    'SAR': 'Sardegna',
+    'SIC': 'Sicilia',
+    'TOS': 'Toscana',
+    'UMB': 'Umbria',
+    'VDA': ['Val', 'Valle', "d'Aosta", 'Vallée', "d'Aoste"],
+    'VEN': 'Veneto',
+}
 
 def get_population_regions():
     # Download data
@@ -158,9 +181,9 @@ def get_vaccines_data():
     return vaccines_data
 
 
-def plot_daily_doses():
+def plot_daily_doses(df):
 
-    df = load_df().groupby("data_somministrazione").sum()
+    df = df.groupby("data_somministrazione").sum()
 
     fig, ax = plt.subplots()
     today = dt.now().strftime("%Y-%m-%d")
@@ -180,9 +203,9 @@ def plot_daily_doses():
     plt.savefig(f"charts/{today}-daily.png", dpi=300)
 
 
-def plot_cumulative():
+def plot_cumulative(df):
 
-    df = load_df().groupby("data_somministrazione").sum()
+    df = df.groupby("data_somministrazione").sum()
 
     fig, ax = plt.subplots()
     today = dt.now().strftime("%Y-%m-%d")
@@ -199,40 +222,70 @@ def plot_cumulative():
     plt.savefig(f"charts/{today}-total.png", dpi=300)
 
 
-def plot_map():
+def plot_map(df):
 
     italy_map = load_map()
-    df = load_df().groupby(by=["area"]).sum()
+    df = df.groupby(by=["area"]).sum()
     df = italy_map.merge(df, on="area", how="right")
     df["ratio"] = df["totale"] / df["pop"] * 100
 
     fig, ax = plt.subplots(dpi=300)
     today = dt.now().strftime("%Y-%m-%d")
     df.plot(ax=ax, column="ratio", cmap="cool", legend=True, categorical=False)
-    #plt.subplots_adjust(left=-0.4, right=1.4, top=0.9, bottom=0.05) 
     plt.tight_layout()
     plt.axis("off")
     ax.set_title("Number of doses per 100 people")
     plt.savefig(f"charts/{today}-map.png", bbox_inches='tight')
 
 
-# def plot_region(region):
-#
-#    df = load_df()
-#    df = df.loc[(df["area"] == region_code[region.lowercase() | df["area"] == region.uppercase())]
-#
-#   df
+def plot_region(df, region_abbr):
+
+    df = df.loc[df["area"] == region_abbr.upper()].sort_index()
+
+    region = df['nome_area'][0]
+
+    fig, ax = plt.subplots()
+    today = dt.now().strftime("%Y-%m-%d")
+    today_wordy = dt.now().strftime("%b %-d, %Y") 
+
+    ax.set_title(f"{region} "+ u"\u00b7"+f" {today_wordy}")
+    ax.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d"))
+    ax.xaxis.set_major_locator(mdates.AutoDateLocator())
+    ax.set_ylabel("Daily doses")
+    ax.bar(df.index, df.prima_dose, label="1st dose")
+    ax.bar(df.index, df.seconda_dose, bottom=df.prima_dose, label="2nd dose")
+    ax.legend(frameon=False)
+    fig.autofmt_xdate()
+
+    plt.savefig(f"charts/regions/{region_abbr.lower()}-daily.png", dpi=300)
+
+
+    fig, ax = plt.subplots()
+
+    ax.set_title(f"{region} " + u"\u00b7" + f" {today_wordy}")
+    ax.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d"))
+    ax.xaxis.set_major_locator(mdates.AutoDateLocator())
+    ax.set_ylabel("Total doses")
+    ax.plot(df.prima_dose.cumsum(), marker="o", label="1st dose")
+    ax.plot(df.seconda_dose.cumsum(), marker="o", label="2nd dose")
+    ax.plot(df.totale.cumsum(), marker="o", color="ForestGreen", label="Total")
+    ax.legend(frameon=False, loc="best")
+    fig.autofmt_xdate()
+
+    plt.savefig(f"charts/regions/{region_abbr.lower()}-total.png", dpi=300)
+
 
 
 def main():
-    plot_daily_doses()
-    plot_cumulative()
-    plot_map()
 
+    df = load_df()
 
-#  if sys.argv:
-#      region = ' '.join(sys.argv)
-#      plo
+    plot_daily_doses(df)
+    plot_cumulative(df)
+    plot_map(df)
+
+    for region in regions:
+        plot_region(df, region)
 
 
 if __name__ == "__main__":
