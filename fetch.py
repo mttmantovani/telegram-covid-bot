@@ -18,28 +18,29 @@ pop_exp = r"The current population of <strong>Italy</strong> is <strong>(.*?)</s
 pop_pattern = re.compile(pop_exp)
 
 regions = {
-    'ABR': 'Abruzzo',
-    'BAS': 'Basilicata',
-    'CAL': 'Calabria',
-    'CAM': 'Campania',
-    'EMR': ['Emilia', 'Romagna'],
-    'FVG': ['Friuli', 'Venezia', 'Giulia'],
-    'LAZ': 'Lazio',
-    'LIG': 'Liguria', 
-    'LOM': 'Lombardia',
-    'MAR': 'Marche',
-    'MOL': 'Molise',
-    'PAB': ['Trento', 'provincia', 'autonoma'],
-    'PAT': ['Bolzano', 'Bozen', 'provincia', 'autonoma'],
-    'PIE': 'Piemonte', 
-    'PUG': 'Puglia',
-    'SAR': 'Sardegna',
-    'SIC': 'Sicilia',
-    'TOS': 'Toscana',
-    'UMB': 'Umbria',
-    'VDA': ['Val', 'Valle', "d'Aosta", 'Vallée', "d'Aoste"],
-    'VEN': 'Veneto',
+    "ABR": "Abruzzo",
+    "BAS": "Basilicata",
+    "CAL": "Calabria",
+    "CAM": "Campania",
+    "EMR": ["Emilia", "Romagna"],
+    "FVG": ["Friuli", "Venezia", "Giulia"],
+    "LAZ": "Lazio",
+    "LIG": "Liguria",
+    "LOM": "Lombardia",
+    "MAR": "Marche",
+    "MOL": "Molise",
+    "PAB": ["Trento", "provincia", "autonoma"],
+    "PAT": ["Bolzano", "Bozen", "provincia", "autonoma"],
+    "PIE": "Piemonte",
+    "PUG": "Puglia",
+    "SAR": "Sardegna",
+    "SIC": "Sicilia",
+    "TOS": "Toscana",
+    "UMB": "Umbria",
+    "VDA": ["Val", "Valle", "d'Aosta", "Vallée", "d'Aoste"],
+    "VEN": "Veneto",
 }
+
 
 def get_population_regions():
     # Download data
@@ -242,13 +243,13 @@ def plot_region(df, region_abbr):
 
     df = df.loc[df["area"] == region_abbr.upper()].sort_index()
 
-    region = df['nome_area'][0]
+    region = df["nome_area"][0]
 
     fig, ax = plt.subplots()
     today = dt.now().strftime("%Y-%m-%d")
-    today_wordy = dt.now().strftime("%b %-d, %Y") 
+    today_wordy = dt.now().strftime("%b %-d, %Y")
 
-    ax.set_title(f"{region} "+ u"\u00b7"+f" {today_wordy}")
+    ax.set_title(f"{region} " + "\u00b7" + f" {today_wordy}")
     ax.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d"))
     ax.xaxis.set_major_locator(mdates.AutoDateLocator())
     ax.set_ylabel("Daily doses")
@@ -259,10 +260,9 @@ def plot_region(df, region_abbr):
 
     plt.savefig(f"charts/regions/{region_abbr.lower()}-daily.png", dpi=300)
 
-
     fig, ax = plt.subplots()
 
-    ax.set_title(f"{region} " + u"\u00b7" + f" {today_wordy}")
+    ax.set_title(f"{region} " + "\u00b7" + f" {today_wordy}")
     ax.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d"))
     ax.xaxis.set_major_locator(mdates.AutoDateLocator())
     ax.set_ylabel("Total doses")
@@ -273,7 +273,6 @@ def plot_region(df, region_abbr):
     fig.autofmt_xdate()
 
     plt.savefig(f"charts/regions/{region_abbr.lower()}-total.png", dpi=300)
-
 
 
 def main():
