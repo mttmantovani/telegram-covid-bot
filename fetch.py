@@ -235,7 +235,7 @@ def plot_map(df):
     plt.tight_layout()
     plt.axis("off")
     ax.set_title("Number of doses per 100 people")
-    plt.savefig(f"charts/{today}-map.png", bbox_inches='tight')
+    plt.savefig(f"charts/{today}-map.png", bbox_inches="tight")
 
 
 def plot_region(df, region_abbr):
