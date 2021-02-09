@@ -17,6 +17,9 @@ from jinja2 import Template
 from telegram import InputMediaPhoto, Update
 from telegram.ext import CallbackContext, CommandHandler, Updater
 
+from fetch import regions
+
+
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
 )
@@ -161,16 +164,36 @@ def plot(update: Update, context: CallbackContext) -> None:
     today = dt.now().strftime("%Y-%m-%d")
     today_wordy = dt.now().strftime("%b %-d, %Y")
 
-    plot_urls = [
-        f"https://raw.githubusercontent.com/mttmantovani/telegram-covid-bot/main/charts/{today}-{plot}.png"
-        for plot in ["total", "daily", "map"]
-    ]
-    captions = [f"Daily report of {today_wordy}", "", ""]
+    if context.args:
+        update.message.reply_text(' '.join(context.args))
+        for abbr, name in regions.items():
+            if any(_name in ' '.join(context.args) for _name in name ):
+                region_name = name[0]
+                region_abbr = abbr
+            else:
+                update.message.reply_text('Regione inesistente.')
+                return
+    else:
+        region_name = 'Italy'
+        region_abbr = 'ITA'
+
+    if region_name == 'Italy':
+        plot_urls = [
+            f"https://raw.githubusercontent.com/mttmantovani/telegram-covid-bot/main/charts/{today}-{plot}.png"
+            for plot in ["total", "daily", "map"]
+        ]
+        captions = [f"Summary plots of {today_wordy}", "", ""]
+    else:
+        plot_urls = [
+            f"https://raw.githubusercontent.com/mttmantovani/telegram-covid-bot/main/charts/regions/{region_abbr.lower()}-{plot}.png"
+            for plot in ["total", "daily"]
+        ]
+        captions = [f"Summary plots of {today_wordy} for {region_name}", ""]
+        
 
     plots = [InputMediaPhoto(url, caption) for url, caption in zip(plot_urls, captions)]
 
     update.message.reply_media_group(plots)
-
 
 def is_subscribed(name, context):
     current_jobs = context.job_queue.get_jobs_by_name(name)
