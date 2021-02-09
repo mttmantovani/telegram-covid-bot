@@ -206,12 +206,14 @@ def plot_map():
     df = italy_map.merge(df, on="area", how="right")
     df["ratio"] = df["totale"] / df["pop"] * 100
 
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(dpi=300)
     today = dt.now().strftime("%Y-%m-%d")
-    ax.set_title("Number of doses per 100 people")
-    df.plot(ax=ax, column="ratio", cmap="autumn_r", legend=True, categorical=False)
+    df.plot(ax=ax, column="ratio", cmap="cool", legend=True, categorical=False)
+    #plt.subplots_adjust(left=-0.4, right=1.4, top=0.9, bottom=0.05) 
+    plt.tight_layout()
     plt.axis("off")
-    plt.savefig(f"charts/{today}-map.png", dpi=300)
+    ax.set_title("Number of doses per 100 people")
+    plt.savefig(f"charts/{today}-map.png", bbox_inches='tight')
 
 
 # def plot_region(region):

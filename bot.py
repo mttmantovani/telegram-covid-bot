@@ -231,6 +231,9 @@ def goodbot(update: Update, context: CallbackContext) -> None:
     chat_id = update.message.chat_id
     update.message.reply_text("Grazie, mio padrone.")
 
+def badbot(update: Update, context: CallbackContext) -> None:
+    chat_id = update.message.chat_id
+    update.message.reply_text(u"\U0001f62d")
 
 def main():
     updater = Updater(token, use_context=True)
@@ -256,6 +259,7 @@ def main():
     dispatcher.add_handler(CommandHandler("subscribe", subscribe))
     dispatcher.add_handler(CommandHandler("unsubscribe", unsubscribe))
     dispatcher.add_handler(CommandHandler("goodbot", goodbot))
+    dispatcher.add_handler(CommandHandler("badbot", badbot))
 
     updater.start_polling()
 
