@@ -7,6 +7,7 @@ Get information about vaccinations in Italy through Telegram. Add me at [t.me/Va
 * `/start`: Quick start guide
 * `/latest`: Get latest data on vaccinations
 * `/plot`: Get some charts on vaccinations
+    - `/plot [regione]`: Get info on a specific region, e.g.: `/plot Molise`
 * `/subscribe`: Receive daily updates automatically
 * `/unsubscribe`: Stop receiving updates 
 
