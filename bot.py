@@ -116,7 +116,8 @@ def start(update: Update, context: CallbackContext) -> None:
 about COVID vaccinations in Italy with the command <b>/latest</b>. \
 Subscribe to get daily updates: \
 <b>/subscribe</b>. Or <b>/unsubscribe</b>.\n \
-<b>/plot</b> to see a chart of vaccinations.",
+<b>/plot</b> to see a chart of vaccinations for Italy, \
+or <b>/plot regione</b> for info region by region. Example: /plot Liguria",
         parse_mode="HTML",
     )
 
@@ -162,16 +163,18 @@ def latest_job(context):
 def plot(update: Update, context: CallbackContext) -> None:
     today = dt.now().strftime("%Y-%m-%d")
     today_wordy = dt.now().strftime("%b %-d, %Y")
-
+    
     if context.args:
-        update.message.reply_text(" ".join(context.args))
+        found = False
         for abbr, name in regions.items():
-            if any(_name in " ".join(context.args) for _name in name):
-                region_name = name[0]
-                region_abbr = abbr
-            else:
-                update.message.reply_text("Regione inesistente.")
-                return
+            for arg in context.args:
+                if arg.lower() in (_n.lower() for _n in name):
+                    region_name = name[0]
+                    region_abbr = abbr
+                    found = True
+        if not found:
+            update.message.reply_text("Regione inesistente.")
+            return
     else:
         region_name = "Italy"
         region_abbr = "ITA"
