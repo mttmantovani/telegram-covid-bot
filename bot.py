@@ -163,7 +163,7 @@ def latest_job(context):
 def plot(update: Update, context: CallbackContext) -> None:
     today = dt.now().strftime("%Y-%m-%d")
     today_wordy = dt.now().strftime("%b %-d, %Y")
-    
+
     if context.args:
         found = False
         for abbr, name in regions.items():
