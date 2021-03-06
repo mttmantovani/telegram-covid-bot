@@ -6,6 +6,7 @@ from datetime import date
 from datetime import datetime as dt
 from datetime import timedelta as td
 
+import numpy as np
 import geopandas as gpd
 import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
@@ -196,6 +197,11 @@ def plot_daily_doses(df):
 
     ax.bar(df.index, df.prima_dose, label="1st dose")
     ax.bar(df.index, df.seconda_dose, bottom=df.prima_dose, label="2nd dose")
+
+    window = 7
+    ax.plot(df.index,
+            np.convolve(df.prima_dose + df.seconda_dose, np.ones(window), 'same') / window, lw=2,
+            color="ForestGreen", label="Total")
 
     fig.autofmt_xdate()
 
