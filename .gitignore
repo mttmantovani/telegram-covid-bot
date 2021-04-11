@@ -1,0 +1,10 @@
+token.txt
+test.ipynb
+
+__pycache__/
+.ipynb_checkpoints/
+
+nohup.out
+bot.log
+
+subscribed_users.txt
