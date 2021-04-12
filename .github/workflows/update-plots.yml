@@ -1,9 +1,9 @@
 name: Update plots
 
 on:
-    push:
-        branches:
-            - main
+ #   push:
+ #       branches:
+ #           - main
     schedule:
         - cron: '0 */6 * * *'
     workflow_dispatch:
