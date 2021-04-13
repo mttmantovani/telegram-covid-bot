@@ -249,6 +249,7 @@ def plot_daily_doses(df):
     filename = f"charts/{today}-daily.png"
     plt.savefig(filename, dpi=300, bbox_inches="tight")
     send_to_S3(filename, filename, image=True)
+    send_to_S3(filename, "charts/latest-daily.png", image=True)
     plt.close()
 
 
@@ -272,6 +273,7 @@ def plot_cumulative(df):
     filename = f"charts/{today}-total.png"
     plt.savefig(filename, dpi=300, bbox_inches="tight")
     send_to_S3(filename, filename, image=True)
+    send_to_S3(filename, "charts/latest-total.png", image=True)
     plt.close()
 
 
@@ -292,6 +294,7 @@ def plot_map(df):
     filename = f"charts/{today}-map.png"
     plt.savefig(filename, bbox_inches="tight")
     send_to_S3(filename, filename, image=True)
+    send_to_S3(filename, "charts/latest-map.png", image=True)
     plt.close()
 
 
