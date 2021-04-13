@@ -12,4 +12,4 @@ jobs:
         steps:
             - name: Ping
               run: |
-                  sh -c "curl --silent https://${{secrets.HEROKU_APP_NAME}}.herokuapp.com/" 
+                  sh -c "curl --silent --fail https://${{secrets.HEROKU_APP_NAME}}.herokuapp.com/" 
