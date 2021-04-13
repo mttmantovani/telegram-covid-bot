@@ -6,6 +6,7 @@ on:
     paths:
       - 'bot.py'
       - 'Procfile'
+      - 'template.html'
 
 jobs:
   build:
