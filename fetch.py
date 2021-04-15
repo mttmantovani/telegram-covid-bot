@@ -34,7 +34,7 @@ def send_to_S3(filename, key, image=False):
         ExtraArgs = {
             "ACL": "public-read",
             "ContentType": "image/png",
-            "Metadata": {"Cache-Control": "max-age=3600"},
+            "Metadata": {"Cache-Control": "max-age=100"},
         }
     s3.meta.client.upload_file(
         Filename=filename,
