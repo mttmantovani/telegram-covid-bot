@@ -31,9 +31,11 @@ s3 = session.resource("s3")
 def send_to_S3(filename, key, image=False):
     ExtraArgs = None
     if image is True:
-        ExtraArgs = {"ACL": "public-read", 
-                     "ContentType": "image/png",
-                     "Metadata": {"Cache-Control": "max-age=3600"}}
+        ExtraArgs = {
+            "ACL": "public-read",
+            "ContentType": "image/png",
+            "Metadata": {"Cache-Control": "max-age=3600"},
+        }
     s3.meta.client.upload_file(
         Filename=filename,
         Bucket=os.environ.get("S3_BUCKET_NAME", None),
