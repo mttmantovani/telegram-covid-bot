@@ -16,5 +16,3 @@ Get information about vaccinations in Italy through Telegram. Add me at [t.me/Va
 ![Total doses administered.](https://mttmantovani.s3.eu-central-1.amazonaws.com/charts/latest-total.png?)
 ![Daily doses.](https://mttmantovani.s3.eu-central-1.amazonaws.com/charts/latest-daily.png?)
 ![Doses per 100 people per region](https://mttmantovani.s3.eu-central-1.amazonaws.com/charts/latest-map.png?)
-
-
