@@ -176,6 +176,8 @@ def latest(update: Update, context: CallbackContext) -> None:
 
 def latest_job(context):
     today = dt.now().strftime("%Y-%m-%d")
+    ts = dt.now().strftime("%Y%m%d-%H%M")
+
     data = get_vaccines_data()
     data["date"] = dt.now().strftime("%b %-d, %Y - %H:%M")
     with codecs.open("template.html", "r", encoding="UTF-8") as file:
@@ -186,7 +188,7 @@ def latest_job(context):
     today_wordy = dt.now().strftime("%b %-d, %Y")
 
     plot_urls = [
-        f"https://mttmantovani.s3.eu-central-1.amazonaws.com/charts/{today}-{plot}.png"
+        f"https://mttmantovani.s3.eu-central-1.amazonaws.com/charts/{today}-{plot}.png?a={ts}"
         for plot in ["total", "daily", "map"]
     ]
     captions = [f"Daily report of {today_wordy}", "", ""]
@@ -202,6 +204,7 @@ def latest_job(context):
 def plot(update: Update, context: CallbackContext) -> None:
     today = dt.now().strftime("%Y-%m-%d")
     today_wordy = dt.now().strftime("%b %-d, %Y")
+    ts = dt.now().strftime("%Y%m%d-%H%M")
 
     if context.args:
         found = False
@@ -220,13 +223,13 @@ def plot(update: Update, context: CallbackContext) -> None:
 
     if region_name == "Italy":
         plot_urls = [
-            f"https://mttmantovani.s3.eu-central-1.amazonaws.com/charts/{today}-{plot}.png"
+            f"https://mttmantovani.s3.eu-central-1.amazonaws.com/charts/{today}-{plot}.png?a={ts}"
             for plot in ["total", "daily", "map"]
         ]
         captions = [f"Summary plots of {today_wordy}", "", ""]
     else:
         plot_urls = [
-            f"https://mttmantovani.s3.eu-central-1.amazonaws.com/charts/regions/{region_abbr.lower()}-{plot}.png"
+            f"https://mttmantovani.s3.eu-central-1.amazonaws.com/charts/regions/{region_abbr.lower()}-{plot}.png?a={ts}"
             for plot in ["total", "daily"]
         ]
         captions = [f"Summary plots of {today_wordy} for {region_name}", ""]
