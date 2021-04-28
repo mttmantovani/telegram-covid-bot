@@ -237,11 +237,9 @@ def plot_daily_doses(df):
     ax.bar(df.index, df.seconda_dose, bottom=df.prima_dose, label="2nd dose")
 
     ax.plot(
-        df.index,
-        df.totale.rolling(window=7, min_periods=1, center=True).mean(),
-        lw=1,
-        marker="o",
-        markersize=3,
+        df.index[:-1],
+        df.totale.rolling(window=7, min_periods=1, center=True).mean()[:-1],
+        lw=2,
         color="ForestGreen",
         label="Total (7-days moving average)",
     )
