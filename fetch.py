@@ -315,7 +315,9 @@ def plot_region(df, region_abbr):
     ax.xaxis.set_major_locator(mdates.AutoDateLocator())
     ax.set_ylabel("Daily doses")
     ax.bar(df.index[:-1], df.prima_dose[:-1], label="1st dose")
-    ax.bar(df.index[:-1], df.seconda_dose[:-1], bottom=df.prima_dose[:-1], label="2nd dose")
+    ax.bar(
+        df.index[:-1], df.seconda_dose[:-1], bottom=df.prima_dose[:-1], label="2nd dose"
+    )
     ax.legend(frameon=False)
     fig.autofmt_xdate()
 
