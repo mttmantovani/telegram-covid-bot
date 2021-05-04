@@ -234,7 +234,7 @@ def plot_daily_doses(df):
     ax.set_ylabel("Daily doses")
 
     ax.bar(df.index[:-1], df.prima_dose[:-1], label="1st dose")
-    ax.bar(df.index[:-1], df.seconda_dose[:-1], bottom=df.prima_dose, label="2nd dose")
+    ax.bar(df.index[:-1], df.seconda_dose[:-1], bottom=df.prima_dose[:-1], label="2nd dose")
 
     ax.plot(
         df.index[:-1],
