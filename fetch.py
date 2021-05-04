@@ -233,8 +233,8 @@ def plot_daily_doses(df):
     ax.xaxis.set_major_locator(mdates.AutoDateLocator())
     ax.set_ylabel("Daily doses")
 
-    ax.bar(df.index, df.prima_dose, label="1st dose")
-    ax.bar(df.index, df.seconda_dose, bottom=df.prima_dose, label="2nd dose")
+    ax.bar(df.index[:-1], df.prima_dose[:-1], label="1st dose")
+    ax.bar(df.index[:-1], df.seconda_dose[:-1], bottom=df.prima_dose, label="2nd dose")
 
     ax.plot(
         df.index[:-1],
@@ -266,9 +266,9 @@ def plot_cumulative(df):
     ax.xaxis.set_major_locator(mdates.AutoDateLocator())
     ax.set_ylabel("Total doses")
 
-    ax.plot(df.prima_dose.cumsum(), marker="o", label="1st dose")
-    ax.plot(df.seconda_dose.cumsum(), marker="o", label="2nd dose")
-    ax.plot(df.totale.cumsum(), marker="o", color="ForestGreen", label="Total")
+    ax.plot(df.prima_dose.cumsum()[:-1], marker="o", label="1st dose")
+    ax.plot(df.seconda_dose.cumsum()[:-1], marker="o", label="2nd dose")
+    ax.plot(df.totale.cumsum()[:-1], marker="o", color="ForestGreen", label="Total")
     ax.legend(frameon=False, loc="best")
     fig.autofmt_xdate()
 
@@ -314,8 +314,8 @@ def plot_region(df, region_abbr):
     ax.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d"))
     ax.xaxis.set_major_locator(mdates.AutoDateLocator())
     ax.set_ylabel("Daily doses")
-    ax.bar(df.index, df.prima_dose, label="1st dose")
-    ax.bar(df.index, df.seconda_dose, bottom=df.prima_dose, label="2nd dose")
+    ax.bar(df.index[:-1], df.prima_dose[:-1], label="1st dose")
+    ax.bar(df.index[:-1], df.seconda_dose[:-1], bottom=df.prima_dose[:-1], label="2nd dose")
     ax.legend(frameon=False)
     fig.autofmt_xdate()
 
@@ -330,9 +330,9 @@ def plot_region(df, region_abbr):
     ax.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d"))
     ax.xaxis.set_major_locator(mdates.AutoDateLocator())
     ax.set_ylabel("Total doses")
-    ax.plot(df.prima_dose.cumsum(), marker="o", label="1st dose")
-    ax.plot(df.seconda_dose.cumsum(), marker="o", label="2nd dose")
-    ax.plot(df.totale.cumsum(), marker="o", color="ForestGreen", label="Total")
+    ax.plot(df.prima_dose.cumsum()[:-1], marker="o", label="1st dose")
+    ax.plot(df.seconda_dose.cumsum()[:-1], marker="o", label="2nd dose")
+    ax.plot(df.totale.cumsum()[:-1], marker="o", color="ForestGreen", label="Total")
     ax.legend(frameon=False, loc="best")
     fig.autofmt_xdate()
 
