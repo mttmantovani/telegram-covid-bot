@@ -327,8 +327,7 @@ def plot_region(df, region_abbr):
         color="ForestGreen",
         label="Total (7-days moving average)",
     )
-    
-    
+
     ax.legend(frameon=False)
     fig.autofmt_xdate()
 
