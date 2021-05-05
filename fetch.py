@@ -320,6 +320,15 @@ def plot_region(df, region_abbr):
     ax.bar(
         df.index[:-1], df.seconda_dose[:-1], bottom=df.prima_dose[:-1], label="2nd dose"
     )
+    ax.plot(
+        df.index[:-1],
+        df.totale.rolling(window=7, min_periods=1, center=True).mean()[:-1],
+        lw=2,
+        color="ForestGreen",
+        label="Total (7-days moving average)",
+    )
+    
+    
     ax.legend(frameon=False)
     fig.autofmt_xdate()
 
