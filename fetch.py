@@ -240,7 +240,9 @@ def plot_daily_doses(df):
 
     ax.plot(
         df.index[:-1],
-        (df.prima_dose+df.seconda_dose).rolling(window=7, min_periods=1, center=True).mean()[:-1],
+        (df.prima_dose + df.seconda_dose)
+        .rolling(window=7, min_periods=1, center=True)
+        .mean()[:-1],
         lw=2,
         color="ForestGreen",
         label="Total (7-days moving average)",
