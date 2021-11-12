@@ -188,7 +188,7 @@ def latest_job(context):
     today_wordy = dt.now().strftime("%b %-d, %Y")
 
     plot_urls = [
-        f"https://mttmantovani.s3.eu-central-1.amazonaws.com/charts/{today}-{plot}.png?a={ts}"
+        f"https://mttmantovani.s3.eu-central-1.amazonaws.com/charts/latest-{plot}.png?a={ts}"
         for plot in ["total", "daily", "map"]
     ]
     captions = [f"Daily report of {today_wordy}", "", ""]
@@ -223,7 +223,7 @@ def plot(update: Update, context: CallbackContext) -> None:
 
     if region_name == "Italy":
         plot_urls = [
-            f"https://mttmantovani.s3.eu-central-1.amazonaws.com/charts/{today}-{plot}.png?a={ts}"
+            f"https://mttmantovani.s3.eu-central-1.amazonaws.com/charts/latest-{plot}.png?a={ts}"
             for plot in ["total", "daily", "map"]
         ]
         captions = [f"Summary plots of {today_wordy}", "", ""]
