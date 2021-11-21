@@ -1,5 +1,5 @@
 token.txt
-test.ipynb
+*.ipynb
 
 __pycache__/
 .ipynb_checkpoints/
