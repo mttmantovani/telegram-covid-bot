@@ -183,7 +183,7 @@ def get_vaccines_data():
     avg_pw_first_dose = previous_week_data.prima_dose.sum() / 7
     avg_pw_second_dose = previous_week_data.seconda_dose.sum() / 7
 
-    days_to_herd = (0.7 * population - total_doses * 0.5) / (avg_lw_doses * 0.5)
+    days_to_herd = (0.9 * population - total_doses * 0.5) / (avg_lw_doses * 0.5)
     herd_date = df.index[-1] + td(days=days_to_herd)
 
     today = date(dt.now().year, dt.now().month, dt.now().day)
