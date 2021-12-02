@@ -7,10 +7,7 @@
 <b>Prime dosi: </b>{{ '{:,.0f}'.format(total_first_dose) }} ({{ '%.2f' | format(pc_first_dose) }}% della popolazione)
 <b>Seconde dosi: </b>{{ '{:,.0f}'.format(total_second_dose) }} ({{ '%.2f' | format(pc_second_dose) }}% della popolazione)
 
-<!-- <b>Totale dosi settimana scorsa: </b> {{ '{:,.0f}'.format(lw_total_doses) }} ({{ '%+.2f' | format(pc_pw_doses) }}% compared to previous week)
-<b>Average # of doses per day last week : </b> {{ '{:,.0f}'.format(avg_lw_doses) }} ({{ '%.3f' | format(pc_lw_doses) }}% of population) -->
-
 <b>Somministrazioni ultime 24 ore: </b> {{ '{:,.0f}'.format(y_total_doses) }} ({{ '%+.2f' | format(pc_y_doses) }}% rispetto al giorno precedente)
 
-<b>{{ '{:,.0f}'.format(days_to_herd) }} days</b> al raggiungimento del 90% di copertura
+<b>{{ '{:,.0f}'.format(days_to_herd) }} giorni</b> al raggiungimento del 90% di copertura
 
