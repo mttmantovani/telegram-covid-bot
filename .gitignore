@@ -8,3 +8,9 @@ nohup.out
 bot.log
 
 subscribed_users.txt
+
+.DS_Store
+
+charts/
+
+*.bak*

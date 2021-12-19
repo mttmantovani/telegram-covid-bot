@@ -4,8 +4,9 @@
 <b>💉 VACCINAZIONI in Italia</b>
 
 <b>Total somministrazioni: </b>{{ '{:,.0f}'.format(total_doses) }}
-<b>Prime dosi: </b>{{ '{:,.0f}'.format(total_first_dose) }} ({{ '%.2f' | format(pc_first_dose) }}% della popolazione)
-<b>Seconde dosi: </b>{{ '{:,.0f}'.format(total_second_dose) }} ({{ '%.2f' | format(pc_second_dose) }}% della popolazione)
+<b>Prime dosi: </b>{{ '{:,.0f}'.format(total_first_dose) }} ({{ '%.2f' | format(pc_first_dose) }}% pop)
+<b>Seconde dosi: </b>{{ '{:,.0f}'.format(total_second_dose) }} ({{ '%.2f' | format(pc_second_dose) }}% pop)
+<b>Terze dosi: </b>{{ '{:,.0f}'.format(total_third_dose) }} ({{ '%.2f' | format(pc_third_dose) }}% pop)
 
 <b>Somministrazioni ultime 24 ore: </b> {{ '{:,.0f}'.format(y_total_doses) }} ({{ '%+.2f' | format(pc_y_doses) }}% rispetto al giorno precedente)
 

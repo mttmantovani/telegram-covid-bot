@@ -165,15 +165,18 @@ def get_vaccines_data():
     df = load_df().groupby("data_somministrazione").sum()
 
     population = get_population()
+    pop_over_12 = get_population_regions()
     total_doses = df.totale.sum()
     total_first_dose = df.prima_dose.sum()
     total_second_dose = df.seconda_dose.sum()
+    total_third_dose = df.dose_addizionale_booster.sum()
 
     last_week_data = df.loc[df.index > df.index[-1] - td(days=7)]
     lw_total_doses = last_week_data.totale.sum()
     avg_lw_doses = lw_total_doses / 7
     avg_lw_first_dose = last_week_data.prima_dose.sum() / 7
     avg_lw_second_dose = last_week_data.seconda_dose.sum() / 7
+    avg_lw_third_dose = last_week_data.dose_addizionale_booster.sum() / 7
 
     previous_week_data = df.loc[
         (df.index > df.index[-8] - td(days=7)) & (df.index <= df.index[-1] - td(days=7))
@@ -182,7 +185,8 @@ def get_vaccines_data():
     avg_pw_doses = pw_total_doses / 7
     avg_pw_first_dose = previous_week_data.prima_dose.sum() / 7
     avg_pw_second_dose = previous_week_data.seconda_dose.sum() / 7
-
+    avg_pw_third_dose = previous_week_data.dose_addizionale_booster.sum() / 7
+    
     days_to_herd = (0.9 * population - total_doses * 0.5) / (avg_lw_doses * 0.5)
     herd_date = df.index[-1] + td(days=days_to_herd)
 
@@ -197,19 +201,24 @@ def get_vaccines_data():
         "total_doses": total_doses,
         "total_first_dose": total_first_dose,
         "total_second_dose": total_second_dose,
+        "total_third_dose": total_third_dose,
         "pc_first_dose": total_first_dose / population * 100,
         "pc_second_dose": total_second_dose / population * 100,
+        "pc_third_dose": total_third_dose / population * 100,
         "lw_total_doses": lw_total_doses,
         "avg_lw_doses": avg_lw_doses,
         "pc_lw_doses": avg_lw_doses / population * 100,
         "avg_lw_first_dose": avg_lw_first_dose,
         "avg_lw_second_dose": avg_lw_second_dose,
+        "avg_lw_third_dose": avg_lw_third_dose,       
         "y_total_doses": last_day_data.totale.sum(),
         "y_first_doses": last_day_data.prima_dose.sum(),
         "y_second_doses": last_day_data.seconda_dose.sum(),
+        "y_third_doses": last_day_data.dose_addizionale_booster.sum(),
         "pd_total_doses": previous_day_data.totale.sum(),
         "pd_first_doses": previous_day_data.prima_dose.sum(),
         "pd_second_doses": previous_day_data.seconda_dose.sum(),
+        "pd_third_doses": previous_day_data.dose_addizionale_booster.sum(),
         "pc_y_doses": (last_day_data.totale.sum() - previous_day_data.totale.sum())
         / (previous_day_data.totale.sum())
         * 100,
@@ -219,6 +228,32 @@ def get_vaccines_data():
     }
 
     return vaccines_data
+
+
+def plot_cumulative(df):
+
+    df = df.groupby("data_somministrazione").sum()
+
+    fig, ax = plt.subplots()
+    today = dt.now().strftime("%Y-%m-%d")
+    ax.set_title("Total doses as of " + dt.now().strftime("%b %-d, %Y"))
+    ax.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d"))
+    ax.xaxis.set_major_locator(mdates.AutoDateLocator())
+    ax.set_ylabel("Total doses")
+
+#    ax.fill_between(df.index[:-1], df.totale.cumsum()[:-1], lw=2, color="ForestGreen", label="Total")
+    ax.fill_between(df.index[:-1], df.prima_dose.cumsum()[:-1], y2=0, label="1st dose")
+    ax.fill_between(df.index[:-1], df.prima_dose.cumsum()[:-1]+df.seconda_dose.cumsum()[:-1], y2=df.prima_dose.cumsum()[:-1], label="2nd dose")
+    ax.fill_between(df.index[:-1], df.totale.cumsum()[:-1], y2=df.prima_dose.cumsum()[:-1] + df.seconda_dose.cumsum()[:-1] 
+                    , label="3rd dose", color='red')
+
+    ax.legend(frameon=False, loc="upper left")
+    fig.autofmt_xdate()
+
+    filename = "charts/latest-total.png"
+    plt.savefig(filename, dpi=300, bbox_inches="tight")
+    send_to_S3(filename, filename, image=True)
+    plt.close()
 
 
 def plot_daily_doses(df):
@@ -237,10 +272,15 @@ def plot_daily_doses(df):
     ax.bar(
         df.index[:-1], df.seconda_dose[:-1], bottom=df.prima_dose[:-1], label="2nd dose"
     )
+    ax.bar(
+        df.index[:-1], df.dose_addizionale_booster[:-1], bottom=df.prima_dose[:-1]+df.seconda_dose[:-1], label="3rd dose", color='red'
+    )
+    
 
     ax.plot(
         df.index[:-1],
-        (df.prima_dose + df.seconda_dose)
+       # (df.prima_dose + df.seconda_dose + df.dose_addizionale_booster)
+        df.totale
         .rolling(window=7, min_periods=1, center=True)
         .mean()[:-1],
         lw=2,
@@ -252,34 +292,9 @@ def plot_daily_doses(df):
 
     ax.legend(frameon=False)
 
-    filename = f"charts/latest-daily.png"
+    filename = "charts/latest-daily.png"
     plt.savefig(filename, dpi=300, bbox_inches="tight")
-    # send_to_S3(filename, filename, image=True)
-    send_to_S3(filename, "charts/latest-daily.png", image=True)
-    plt.close()
-
-
-def plot_cumulative(df):
-
-    df = df.groupby("data_somministrazione").sum()
-
-    fig, ax = plt.subplots()
-    today = dt.now().strftime("%Y-%m-%d")
-    ax.set_title("Total doses as of " + dt.now().strftime("%b %-d, %Y"))
-    ax.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d"))
-    ax.xaxis.set_major_locator(mdates.AutoDateLocator())
-    ax.set_ylabel("Total doses")
-
-    ax.plot(df.prima_dose.cumsum()[:-1], marker="o", label="1st dose")
-    ax.plot(df.seconda_dose.cumsum()[:-1], marker="o", label="2nd dose")
-    ax.plot(df.totale.cumsum()[:-1], marker="o", color="ForestGreen", label="Total")
-    ax.legend(frameon=False, loc="best")
-    fig.autofmt_xdate()
-
-    filename = f"charts/latest-total.png"
-    plt.savefig(filename, dpi=300, bbox_inches="tight")
-    # send_to_S3(filename, filename, image=True)
-    send_to_S3(filename, "charts/latest-total.png", image=True)
+    send_to_S3(filename, filename, image=True)
     plt.close()
 
 
@@ -297,10 +312,9 @@ def plot_map(df):
     plt.axis("off")
     ax.set_title("Number of doses per 100 people")
 
-    filename = f"charts/latest-map.png"
+    filename = "charts/latest-map.png"
     plt.savefig(filename, bbox_inches="tight")
-    # send_to_S3(filename, filename, image=True)
-    send_to_S3(filename, "charts/latest-map.png", image=True)
+    send_to_S3(filename, filename, image=True)
     plt.close()
 
 
