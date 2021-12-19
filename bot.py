@@ -20,7 +20,7 @@ from jinja2 import Template
 from telegram import InputMediaPhoto, Update
 from telegram.ext import CallbackContext, CommandHandler, Updater
 
-from fetch import regions, get_vaccines_data, load_df, get_population
+from fetch import get_population, get_vaccines_data, load_df, regions
 
 if os.environ.get("WITH_AWS", None):
     session = boto3.Session(

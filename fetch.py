@@ -186,7 +186,7 @@ def get_vaccines_data():
     avg_pw_first_dose = previous_week_data.prima_dose.sum() / 7
     avg_pw_second_dose = previous_week_data.seconda_dose.sum() / 7
     avg_pw_third_dose = previous_week_data.dose_addizionale_booster.sum() / 7
-    
+
     days_to_herd = (0.9 * population - total_doses * 0.5) / (avg_lw_doses * 0.5)
     herd_date = df.index[-1] + td(days=days_to_herd)
 
@@ -210,7 +210,7 @@ def get_vaccines_data():
         "pc_lw_doses": avg_lw_doses / population * 100,
         "avg_lw_first_dose": avg_lw_first_dose,
         "avg_lw_second_dose": avg_lw_second_dose,
-        "avg_lw_third_dose": avg_lw_third_dose,       
+        "avg_lw_third_dose": avg_lw_third_dose,
         "y_total_doses": last_day_data.totale.sum(),
         "y_first_doses": last_day_data.prima_dose.sum(),
         "y_second_doses": last_day_data.seconda_dose.sum(),
@@ -241,11 +241,21 @@ def plot_cumulative(df):
     ax.xaxis.set_major_locator(mdates.AutoDateLocator())
     ax.set_ylabel("Total doses")
 
-#    ax.fill_between(df.index[:-1], df.totale.cumsum()[:-1], lw=2, color="ForestGreen", label="Total")
+    #    ax.fill_between(df.index[:-1], df.totale.cumsum()[:-1], lw=2, color="ForestGreen", label="Total")
     ax.fill_between(df.index[:-1], df.prima_dose.cumsum()[:-1], y2=0, label="1st dose")
-    ax.fill_between(df.index[:-1], df.prima_dose.cumsum()[:-1]+df.seconda_dose.cumsum()[:-1], y2=df.prima_dose.cumsum()[:-1], label="2nd dose")
-    ax.fill_between(df.index[:-1], df.totale.cumsum()[:-1], y2=df.prima_dose.cumsum()[:-1] + df.seconda_dose.cumsum()[:-1] 
-                    , label="3rd dose", color='red')
+    ax.fill_between(
+        df.index[:-1],
+        df.prima_dose.cumsum()[:-1] + df.seconda_dose.cumsum()[:-1],
+        y2=df.prima_dose.cumsum()[:-1],
+        label="2nd dose",
+    )
+    ax.fill_between(
+        df.index[:-1],
+        df.totale.cumsum()[:-1],
+        y2=df.prima_dose.cumsum()[:-1] + df.seconda_dose.cumsum()[:-1],
+        label="3rd dose",
+        color="red",
+    )
 
     ax.legend(frameon=False, loc="upper left")
     fig.autofmt_xdate()
@@ -273,16 +283,17 @@ def plot_daily_doses(df):
         df.index[:-1], df.seconda_dose[:-1], bottom=df.prima_dose[:-1], label="2nd dose"
     )
     ax.bar(
-        df.index[:-1], df.dose_addizionale_booster[:-1], bottom=df.prima_dose[:-1]+df.seconda_dose[:-1], label="3rd dose", color='red'
+        df.index[:-1],
+        df.dose_addizionale_booster[:-1],
+        bottom=df.prima_dose[:-1] + df.seconda_dose[:-1],
+        label="3rd dose",
+        color="red",
     )
-    
 
     ax.plot(
         df.index[:-1],
-       # (df.prima_dose + df.seconda_dose + df.dose_addizionale_booster)
-        df.totale
-        .rolling(window=7, min_periods=1, center=True)
-        .mean()[:-1],
+        # (df.prima_dose + df.seconda_dose + df.dose_addizionale_booster)
+        df.totale.rolling(window=7, min_periods=1, center=True).mean()[:-1],
         lw=2,
         color="ForestGreen",
         label="Total (7-days moving average)",
